@@ -53,5 +53,138 @@ public class EventsDao {
 			return null ;
 		}
 	}
+	
+	public List<String> getCategories(){
+		String sql = "SELECT DISTINCT(e.`offense_category_id`) as category "
+				+ "FROM events e " ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
 
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			List<String> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(res.getString("category"));
+				} catch (Throwable t) {
+					t.printStackTrace();
+					System.out.println("errore nella lettura del db");
+				}
+}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+
+	
+	public List<Integer> getMonths(){
+		String sql = "SELECT DISTINCT(MONTH(e.`reported_date`)) as month "
+				+ "FROM events e "
+				+ "ORDER BY MONTH(e.`reported_date`) ASC " ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			List<Integer> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(res.getInt("month"));
+				} catch (Throwable t) {
+					t.printStackTrace();
+					System.out.println("errore nella lettura del db");
+				}
+}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	
+	public List<String> getVertices(String categoryID, Integer month){
+		String sql = "SELECT DISTINCT(e.`offense_type_id`) as type "
+				+ "FROM events e "
+				+ "WHERE e.`offense_category_id` = ? "
+				+ "AND MONTH(e.`reported_date`) = ?" ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setString(1, categoryID);
+			st.setInt(2, month);
+			
+			List<String> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(res.getString("type"));
+				} catch (Throwable t) {
+					t.printStackTrace();
+					System.out.println("errore nella lettura del db");
+				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	
+	public List<String> getNeigh(String categoryID, Integer month){
+		String sql = "SELECT DISTINCT(e.`neighborhood_id`) as neig "
+				+ "FROM events e "
+				+ "WHERE e.`offense_type_id`=? "
+				+ "AND MONTH(e.`reported_date`)=? " ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setString(1, categoryID);
+			st.setInt(2, month);
+			
+			List<String> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(res.getString("neig"));
+				} catch (Throwable t) {
+					t.printStackTrace();
+					System.out.println("errore nella lettura del db");
+				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
 }
